@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ------------------------------------------------------------------------
-# sync-torrents_osx.sh
+# sync-torrents_debian.sh
 # A simple script to push torrent file on rtorrent server watch directory
 # Author : dj0ules
 # ------------------------------------------------------------------------
@@ -21,7 +21,7 @@ _source_dir=$HOME/Downloads/Torrents
 
 # Torrent folder hierarchy
 _media_folder=(
-	$_source_dir/Applications/{Linux,MacOS,Windows}
+	$_source_dir/Applications/{Linux,MacOS}
 	$_source_dir/Films/{VF_HD,VF_SD,VOST_HD,VOST_SD}
 	$_source_dir/SeriesTV/{VF_HD,VF_SD,VOST_HD,VOST_SD}
 	$_source_dir/Musique/{FLAC,MP3}
@@ -42,8 +42,9 @@ _tmp_log=$_logdir/sync-torrents.log.tmp
 # ------------
 
 # Check if terminal-notifier exists
-if [ ! -e /usr/local/bin/terminal-notifier ]; then
-	gem install terminal-notifier
+if [ ! -e /usr/bin/notify-send ]; then
+	echo 'This script need libnotify-bin to run, please enter your password if asked'
+	sudo apt install --yes libnotify-bin
 fi
 
 
@@ -94,7 +95,7 @@ $_source_dir $_ssh_user@$_ssh_server_addr:$_watch_dir > $_tmp_log 2>&1
 
 if [ "$?" -eq 0 ]; then
 	if [ "$_torrent_count" -gt 0 ]; then
-		terminal-notifier -title "push-torrents" -message "$_torrent_count files have been added to the remote server!"
+		/usr/bin/notify-send "sync-torrents" "$_torrent_count files have been added to the remote server!"
 		getTitle
 		cat $_tmp_log >> $_logfile
 		echo >> $_logfile
@@ -104,7 +105,7 @@ if [ "$?" -eq 0 ]; then
 		exit 0
 	fi
 else
-	terminal-notifier -title "push-torrents" -message "Script failed! Please check log file."
+	/usr/bin/notify-send "sync-torrents" "Script failed! Please check log file."
 	getTitle
 	cat $_tmp_log >> $_logfile
 	echo >> $_logfile
