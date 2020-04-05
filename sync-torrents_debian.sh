@@ -100,7 +100,7 @@ if [ "$?" -eq 0 ]; then
 		cat $_tmp_log >> $_logfile
 		echo >> $_logfile
 		find $_source_dir -name "*.torrent" -type f -delete
-		find $_tvshow_dir -depth 2 -type d -delete
+		find $_tvshow_dir -mindepth 2 -maxdepth 2 -type d -delete
 	else
 		exit 0
 	fi
